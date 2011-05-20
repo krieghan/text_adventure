@@ -1,5 +1,6 @@
-from action import Action
-from exception import CouldNotInterpret
+from text_adventure import (exception,
+                            action)
+
 
 
 class Interpreter(object):
@@ -7,7 +8,7 @@ class Interpreter(object):
     def __init__(self,
                  dictionary,
                  thesaurus,
-                 multiWordTokens):
+                 multiWordTokens=[]):
         self.dictionary = dictionary
         self.verbs = dictionary.get('verbs')
         self.nouns = dictionary.get('nouns') + dictionary.get('names')
@@ -35,41 +36,41 @@ class Interpreter(object):
         
         if self.determineMatch(['direction'],
                                structure):
-            actions.append(Action(verb='go',
+            actions.append(action.Action(verb='go',
                                   object=simplifiedWords[0]))
         if self.determineMatch(['verb', 'direction'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[1]))
         if self.determineMatch(['verb'], structure):
-            actions.append(Action(verb=simplifiedWords[0]))
+            actions.append(action.Action(verb=simplifiedWords[0]))
         if self.determineMatch(['verb', 'preposition', 'noun'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   preposition=simplifiedWords[1],
                                   object=simplifiedWords[2]))
         if self.determineMatch(['verb', 'noun'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[1]))
         if self.determineMatch(['noun'],
                                structure):
-            actions.append(Action(verb=None,
+            actions.append(action.Action(verb=None,
                                   object=simplifiedWords[0]))
         if self.determineMatch(['verb', 'noun', 'preposition'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[1],
                                   preposition=simplifiedWords[2]))
         if self.determineMatch(['verb', 'noun', 'preposition', 'noun'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[1],
                                   preposition=simplifiedWords[2],
                                   indirectObject=simplifiedWords[3]))
         if self.determineMatch(['verb', 'preposition', 'noun', 'preposition', 'noun'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[2],
                                   preposition=simplifiedWords[3],
                                   indirectObject=simplifiedWords[4]))
@@ -81,7 +82,7 @@ class Interpreter(object):
                                 'noun'],
                                structure):
             actions.append(
-               Action(verb=simplifiedWords[0],
+               action.Action(verb=simplifiedWords[0],
                       object=simplifiedWords[1],
                       preposition=simplifiedWords[2],
                       indirectObject=simplifiedWords[3],
@@ -92,7 +93,7 @@ class Interpreter(object):
                                 'noun',
                                 'noun'],
                                structure):
-            actions.append(Action(verb=simplifiedWords[0],
+            actions.append(action.Action(verb=simplifiedWords[0],
                                   object=simplifiedWords[2],
                                   indirectObject=simplifiedWords[1]))
             
