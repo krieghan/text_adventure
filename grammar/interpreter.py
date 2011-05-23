@@ -98,12 +98,12 @@ class Interpreter(object):
                                   indirectObject=simplifiedWords[1]))
             
         if len(actions) > 1:
-            raise CouldNotInterpret('I identified more than one way to interpret that command.')
+            raise exception.CouldNotInterpret('I identified more than one way to interpret that command.')
         if len(actions) == 0:
-            raise CouldNotInterpret('I do not know what to do with the structure %s' % structure)
+            raise exception.CouldNotInterpret('I do not know what to do with the structure %s' % structure)
         if len(actions) == 1:
-            action = actions[0]
-        return action
+            parsedAction = actions[0]
+        return parsedAction
     
     def getPartsOfSpeech(self, word):
         parts = []
@@ -117,7 +117,7 @@ class Interpreter(object):
             parts.append('preposition')
         
         if not parts:
-            raise CouldNotInterpret('I did not understand "%s"' % word)
+            raise exception.CouldNotInterpret('I did not understand "%s"' % word)
         else:
             return parts
         
