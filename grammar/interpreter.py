@@ -11,13 +11,24 @@ class Interpreter(object):
                  multiWordTokens=[]):
         self.dictionary = dictionary
         self.verbs = dictionary.get('verbs')
-        self.nouns = dictionary.get('nouns') + dictionary.get('names')
+        self.nouns = dictionary.get('nouns')
         self.prepositions = dictionary.get('prepositions')
         self.articles = dictionary.get('articles')
+        self.adjectives = dictionary.get('adjectives')
         self.directions = dictionary.get('directions')
         self.thesaurus = thesaurus
         self.multiWordTokens = [x.lower() for x in multiWordTokens]
-        
+    
+    def addWords(self,
+                 words,
+                 partOfSpeech):
+        if partOfSpeech == 'noun':
+            self.nouns.extend(words)
+            self.nouns = list(set(self.nouns))
+        if partOfSpeech == 'adjective':
+            self.adjectives.extend(words)
+            self.adjectives = list(set(self.adjectives))
+            
     def evaluate(self, text):
         text = text.lower()
         for token in self.multiWordTokens:
@@ -37,43 +48,49 @@ class Interpreter(object):
         if self.determineMatch(['direction'],
                                structure):
             actions.append(sentence.Sentence(verb='go',
-                                  object=simplifiedWords[0]))
+                                             object=simplifiedWords[0]))
         if self.determineMatch(['verb', 'direction'],
                                structure):
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
-                                  object=simplifiedWords[1]))
+                                             object=simplifiedWords[1]))
         if self.determineMatch(['verb'], structure):
             actions.append(sentence.Sentence(verb=simplifiedWords[0]))
         if self.determineMatch(['verb', 'preposition', 'noun'],
                                structure):
+            phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[1],
+                                                    object=simplifiedWords[2])]
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
-                                  preposition=simplifiedWords[1],
-                                  object=simplifiedWords[2]))
+                                             prepositionalPhrases=phrases))
         if self.determineMatch(['verb', 'noun'],
                                structure):
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
-                                  object=simplifiedWords[1]))
+                                             object=simplifiedWords[1]))
         if self.determineMatch(['noun'],
                                structure):
             actions.append(sentence.Sentence(verb=None,
                                   object=simplifiedWords[0]))
         if self.determineMatch(['verb', 'noun', 'preposition'],
                                structure):
+            phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[2],
+                                                    object=None)]
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
-                                  object=simplifiedWords[1],
-                                  preposition=simplifiedWords[2]))
+                                             prepositionalPhrases=phrases))
         if self.determineMatch(['verb', 'noun', 'preposition', 'noun'],
                                structure):
+            phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[2],
+                                                    object=simplifiedWords[3])]
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
-                                  object=simplifiedWords[1],
-                                  preposition=simplifiedWords[2],
-                                  indirectObject=simplifiedWords[3]))
+                                             object=simplifiedWords[1],
+                                             prepositionalPhrases=phrases))
         if self.determineMatch(['verb', 'preposition', 'noun', 'preposition', 'noun'],
                                structure):
+            phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[1],
+                                                    object=simplifiedWords[2]),
+                       sentence.PrepositionalPhrase(preposition=simplifiedWords[3],
+                                                    object=simplifiedWords[4])]
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
                                   object=simplifiedWords[2],
-                                  preposition=simplifiedWords[3],
-                                  indirectObject=simplifiedWords[4]))
+                                  prepositionalPhrases=phrases))
         if self.determineMatch(['verb', 
                                 'noun', 
                                 'preposition', 
@@ -81,18 +98,19 @@ class Interpreter(object):
                                 'preposition',
                                 'noun'],
                                structure):
+            phrases = [PrepositionalPhrase(preposition=simplifiedWords[2],
+                                           object=simplifiedWords[3]),
+                       PrepositionalPhrase(preposition=simplifiedWords[4],
+                                           object=simplifiedWords[5])]
             actions.append(
                sentence.Sentence(verb=simplifiedWords[0],
-                      object=simplifiedWords[1],
-                      preposition=simplifiedWords[2],
-                      indirectObject=simplifiedWords[3],
-                      indirectObjectPhrase=\
-                        {simplifiedWords[4] : simplifiedWords[5]})
-                      )
+                                 object=simplifiedWords[1],
+                                 prepositionalPhrases=phrases))
         if self.determineMatch(['verb',
                                 'noun',
                                 'noun'],
                                structure):
+            raise Exception('What the fuck?')
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
                                   object=simplifiedWords[2],
                                   indirectObject=simplifiedWords[1]))

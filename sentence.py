@@ -2,23 +2,30 @@ class Sentence(object):
     def __init__(self,
                  verb,
                  object=None,
-                 preposition=None,
-                 indirectObject=None,
-                 indirectObjectPhrase=None):
-        if indirectObjectPhrase is None:
-            indirectObjectPhrase = dict()
+                 prepositionalPhrases=None):
+        if prepositionalPhrases is None:
+            prepositionalPhrases = []
+        self.prepositionalPhrases = {}
         self.verb = verb
         self.object = object
-        self.preposition = preposition
-        self.indirectObject = indirectObject
-        self.indirectObjectPhrase = indirectObjectPhrase
-    
+        for prepositionalPhrase in prepositionalPhrases:
+            self.prepositionalPhrases[prepositionalPhrase.preposition] = prepositionalPhrase
+            
+        if prepositionalPhrases:
+            self.prepositionalPhrases['main'] = prepositionalPhrases[0]
+
+        
     def verbOnly(self):
         if (self.verb is not None and 
-            self.preposition is None and 
-            self.object is None and 
-            self.indirectObject is None):
+            self.object is None and
+            self.prepositionalPhrases == {}):
             return True
         else:
             return False
     
+class PrepositionalPhrase(object):
+    def __init__(self,
+                 preposition=None,
+                 object=None):
+        self.preposition = preposition
+        self.object = object
