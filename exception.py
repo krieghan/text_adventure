@@ -10,7 +10,7 @@ class CannotGoThatWay(DenyInput):
 class NotPresent(DenyInput):
     pass
 
-class AmbiguousEntity(DenyInput):
+class AmbiguousResource(DenyInput):
     def __init__(self, matches):
         self.matches = matches
         

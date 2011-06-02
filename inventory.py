@@ -35,6 +35,14 @@ class InventoryManager(object):
             return 'inside'
         
         return 'on'
+    
+    def getAll(self):
+        resources = []
+        for slot in self.slots.values():
+            for resource in slot.values():
+                 resources.append(resource)
+                 
+        return resources
 
 class Inventory(dict):
     
