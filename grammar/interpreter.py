@@ -8,7 +8,15 @@ class Interpreter(object):
     def __init__(self,
                  dictionary,
                  thesaurus,
-                 multiWordTokens=[]):
+                 singleToPlural=None,
+                 pluralToSingle=None,
+                 multiWordTokens=None):
+        if singleToPlural is None:
+            singleToPlural = {}
+        if pluralToSingle is None:
+            pluralToSingle = {}
+        if multiWordTokens is None:
+            multiWordTokens = []
         self.dictionary = dictionary
         self.verbs = dictionary.get('verbs')
         self.nouns = dictionary.get('nouns')
@@ -17,6 +25,8 @@ class Interpreter(object):
         self.adjectives = dictionary.get('adjectives')
         self.directions = dictionary.get('directions')
         self.thesaurus = thesaurus
+        self.singleToPlural = singleToPlural
+        self.pluralToSingle = pluralToSingle    
         self.multiWordTokens = [x.lower() for x in multiWordTokens]
     
     def addWords(self,
@@ -167,3 +177,17 @@ class Interpreter(object):
             return True
         
         return False
+    
+    def getSingle(self,
+                  plural):
+        single = self.pluralToSingle.get(plural)
+        if single is None:
+            single = plural[0:-1]
+        return single
+    
+    def getPlural(self,
+                  single):
+        plural = self.singleToPlural.get(single)
+        if plural is None:
+            plural = single[0:-1]
+        return plural

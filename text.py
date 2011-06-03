@@ -18,6 +18,16 @@ def process(textToProcess,
     textToProcess = applyLineBreaks(textToProcess, wrapLength)
     return textToProcess
 
+def getPlural(singular):
+    return singular + 's'
+
+def getSingular(plural):
+    return plural[0:-1]
+
+
+
+
+
 def applyLineBreaks(textToProcess, charactersPerLine):
     currentIndex = 0
     lines = []
