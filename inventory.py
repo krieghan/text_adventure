@@ -23,6 +23,10 @@ class InventoryManager(object):
             resource,
             slotKey):
         self.slots[slotKey][resource.key] = resource
+        
+    def addSlotKey(self,
+                   slotKey):
+        self.slots[slotKey] = Inventory()
     
     @classmethod
     def getSlotKey(cls,
