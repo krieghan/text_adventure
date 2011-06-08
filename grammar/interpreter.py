@@ -9,14 +9,11 @@ class Interpreter(object):
                  dictionary,
                  thesaurus,
                  singleToPlural=None,
-                 pluralToSingle=None,
-                 multiWordTokens=None):
+                 pluralToSingle=None):
         if singleToPlural is None:
             singleToPlural = {}
         if pluralToSingle is None:
             pluralToSingle = {}
-        if multiWordTokens is None:
-            multiWordTokens = []
         self.dictionary = dictionary
         self.verbs = dictionary.get('verbs')
         self.nouns = dictionary.get('nouns')
@@ -27,8 +24,9 @@ class Interpreter(object):
         self.thesaurus = thesaurus
         self.singleToPlural = singleToPlural
         self.pluralToSingle = pluralToSingle    
-        self.multiWordTokens = [x.lower() for x in multiWordTokens]
-    
+        self.multiWordTokens = self.getMultiWordTokens()
+        
+
     def addWords(self,
                  words,
                  partOfSpeech):
@@ -40,14 +38,7 @@ class Interpreter(object):
             self.adjectives = list(set(self.adjectives))
             
     def evaluate(self, text):
-        text = text.lower()
-        for token in self.multiWordTokens:
-            if token in text:
-                tokenWithUnderscores = token.replace(' ', '_')
-                text = text.replace(token, tokenWithUnderscores)
-        
-        words = text.split(' ')
-        words = [x.replace('_', ' ') for x in words]
+        words = self.getListOfWords(text)
         
         reducedWords = [x for x in words if not self.exclude(x)]
         simplifiedWords = [self.simplify(x) for x in reducedWords]
@@ -191,3 +182,28 @@ class Interpreter(object):
         if plural is None:
             plural = single[0:-1]
         return plural
+    
+    def getAllWords(self):
+        return self.nouns + self.adjectives + self.verbs + self.prepositions + self.articles + self.directions
+    
+    def getMultiWordTokens(self):
+        allTokens = self.getAllWords()
+        multiWordTokens = []
+        for token in allTokens:
+            index = token.find(' ')
+            if index > 0:
+                multiWordTokens.append(token)
+                
+        return multiWordTokens
+    
+    def getListOfWords(self,
+                       text):
+        text = text.lower()
+        for token in self.multiWordTokens:
+            if token in text:
+                tokenWithUnderscores = token.replace(' ', '_')
+                text = text.replace(token, tokenWithUnderscores)
+        
+        words = text.split(' ')
+        words = [x.replace('_', ' ') for x in words]
+        return words
