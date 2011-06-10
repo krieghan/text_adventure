@@ -2,8 +2,10 @@ class InventoryManager(object):
     def __init__(self,
                  on=False,
                  under=False,
-                 inside=False):
+                 inside=False,
+                 exposed=True):
         self.slots = dict() 
+        self.exposed = exposed
         if on:
             self.slots['on'] = Inventory()
         if under:
@@ -14,8 +16,6 @@ class InventoryManager(object):
     def match(self, entityKey):
         matches = []
         for (key, inventory) in self.slots.items():
-            if not inventory.exposed:
-                continue
             matches.extend(inventory.match(entityKey))
         return matches
     
@@ -24,6 +24,14 @@ class InventoryManager(object):
             slotKey):
         self.slots[slotKey][resource.key] = resource
         
+    def remove(self,
+               resource,
+               slotKey=None):
+        if slotKey is None:
+            for slot in self.slots.values():
+                if slot.get(resource.key):
+                    del slot[resource.key]
+            
     def addSlotKey(self,
                    slotKey):
         self.slots[slotKey] = Inventory()
@@ -51,9 +59,7 @@ class InventoryManager(object):
 class Inventory(dict):
     
     def __init__(self, 
-                 exposed=True,
                  **kwargs):
-        self.exposed = exposed
         dict.__init__(self,
                       **kwargs)
     
@@ -63,7 +69,8 @@ class Inventory(dict):
         for (key, entity) in self.items():
             if entityKey in entity.nouns:
                 matches.append(entity)
-            matches.extend(entity.inventory.match(entityKey))
+            if entity.inventory.exposed:
+                matches.extend(entity.inventory.match(entityKey))
         return matches
     
     
