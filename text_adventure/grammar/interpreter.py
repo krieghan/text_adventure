@@ -15,12 +15,12 @@ class Interpreter(object):
         if pluralToSingle is None:
             pluralToSingle = {}
         self.dictionary = dictionary
-        self.verbs = dictionary.get('verbs')
-        self.nouns = dictionary.get('nouns')
-        self.prepositions = dictionary.get('prepositions')
-        self.articles = dictionary.get('articles')
-        self.adjectives = dictionary.get('adjectives')
-        self.directions = dictionary.get('directions')
+        self.verbs = dictionary.get('verbs', [])
+        self.nouns = dictionary.get('nouns', [])
+        self.prepositions = dictionary.get('prepositions', [])
+        self.articles = dictionary.get('articles', [])
+        self.adjectives = dictionary.get('adjectives', [])
+        self.directions = dictionary.get('directions', [])
         self.thesaurus = thesaurus
         self.singleToPlural = singleToPlural
         self.pluralToSingle = pluralToSingle    

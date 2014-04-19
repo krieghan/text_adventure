@@ -20,6 +20,9 @@ class AmbiguousResource(DenyInput):
         matchString = 'Did you mean %s or %s' % (commaMatchString, allMatches[-1])
         return matchString
 
+class AmbiguousEntity(DenyInput):
+    pass
+
 class CannotPerformAction(DenyInput):
     pass
 
