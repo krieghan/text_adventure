@@ -1,10 +1,7 @@
 from text_adventure import (exception,
                             sentence)
 
-
-
 class Interpreter(object):
-    
     def __init__(self,
                  dictionary,
                  thesaurus,
@@ -17,6 +14,7 @@ class Interpreter(object):
         self.dictionary = dictionary
         self.verbs = dictionary.get('verbs', [])
         self.nouns = dictionary.get('nouns', [])
+        self.commands = dictionary.get('commands', [])
         self.prepositions = dictionary.get('prepositions', [])
         self.articles = dictionary.get('articles', [])
         self.adjectives = dictionary.get('adjectives', [])
@@ -25,7 +23,6 @@ class Interpreter(object):
         self.singleToPlural = singleToPlural
         self.pluralToSingle = pluralToSingle    
         self.multiWordTokens = self.getMultiWordTokens()
-        
 
     def addWords(self,
                  words,
@@ -46,6 +43,9 @@ class Interpreter(object):
         
         actions = []
         
+        if self.determineMatch(['command'],
+                               structure):
+            actions.append(sentence.Sentence(command=simplifiedWords[0]))
         if self.determineMatch(['direction'],
                                structure):
             actions.append(sentence.Sentence(verb='go',
@@ -54,8 +54,12 @@ class Interpreter(object):
                                structure):
             actions.append(sentence.Sentence(verb=simplifiedWords[0],
                                              object=simplifiedWords[1]))
-        if self.determineMatch(['verb'], structure):
-            actions.append(sentence.Sentence(verb=simplifiedWords[0]))
+        if self.determineMatch(['verb', 'preposition'],
+                               structure):
+            phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[1],
+                                                    object=None)]
+            actions.append(sentence.Sentence(verb=simplifiedWords[0],
+                                             prepositionalPhrases=phrases))
         if self.determineMatch(['verb', 'preposition', 'noun'],
                                structure):
             phrases = [sentence.PrepositionalPhrase(preposition=simplifiedWords[1],
@@ -126,6 +130,8 @@ class Interpreter(object):
     
     def getPartsOfSpeech(self, word):
         parts = []
+        if word in self.commands:
+            parts.append('command')
         if word in self.verbs:
             parts.append('verb')
         if word in self.nouns:

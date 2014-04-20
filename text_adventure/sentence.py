@@ -1,13 +1,15 @@
 class Sentence(object):
     def __init__(self,
-                 verb,
+                 verb=None,
                  object=None,
+                 command=None,
                  prepositionalPhrases=None):
         if prepositionalPhrases is None:
             prepositionalPhrases = []
         self.prepositionalPhrases = {}
         self.verb = verb
         self.object = object
+        self.command = command
         for prepositionalPhrase in prepositionalPhrases:
             self.prepositionalPhrases[prepositionalPhrase.preposition] = prepositionalPhrase
             
