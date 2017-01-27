@@ -45,7 +45,9 @@ class Interpreter(object):
         
         if self.determineMatch(['command'],
                                structure):
-            actions.append(sentence.Sentence(command=simplifiedWords[0]))
+            actions.append(sentence.Command(
+                command=simplifiedWords[0],
+                arguments=simplifiedWords[1:]))
         if self.determineMatch(['direction'],
                                structure):
             actions.append(sentence.Sentence(verb='go',

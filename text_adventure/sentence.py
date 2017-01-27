@@ -24,10 +24,21 @@ class Sentence(object):
             return True
         else:
             return False
-    
+
+
 class PrepositionalPhrase(object):
     def __init__(self,
                  preposition=None,
                  object=None):
         self.preposition = preposition
         self.object = object
+
+
+class Command(object):
+    def __init__(
+            self,
+            command,
+            arguments):
+        self.command = command
+        self.arguments = arguments
+
