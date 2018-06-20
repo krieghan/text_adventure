@@ -12,10 +12,6 @@ class Sentence(object):
         self.command = command
         for prepositionalPhrase in prepositionalPhrases:
             self.prepositionalPhrases[prepositionalPhrase.preposition] = prepositionalPhrase
-            
-        if prepositionalPhrases:
-            self.prepositionalPhrases['main'] = prepositionalPhrases[0]
-
         
     def verbOnly(self):
         if (self.verb is not None and 
@@ -24,6 +20,13 @@ class Sentence(object):
             return True
         else:
             return False
+
+    def getObjects(self):
+        objects = {}
+        objects['main'] = getattr(self, 'object', None)
+        for phrase in self.prepositionalPhrases.values():
+            objects[phrase.preposition] = phrase.object
+        return objects
 
 
 class PrepositionalPhrase(object):
@@ -41,4 +44,16 @@ class Command(object):
             arguments):
         self.command = command
         self.arguments = arguments
+
+    def isCheckingInventory(self):
+        return self.command == 'inventory'
+
+    def isQuitting(self):
+        return self.sentence.command in ('quit', 'exit')
+
+    def isSaving(self):
+        return self.sentence.command == 'save'
+
+    def isRestoring(self):
+        return self.sentence.command in ('restore', 'load')
 

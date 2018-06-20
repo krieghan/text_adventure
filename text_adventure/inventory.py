@@ -64,10 +64,9 @@ class Inventory(dict):
                       **kwargs)
     
     def match(self, entityKey):
-        
         matches = []
         for (key, entity) in self.items():
-            if entityKey in entity.nouns:
+            if entityKey in entity.names:
                 matches.append(entity)
             if entity.inventory.exposed:
                 matches.extend(entity.inventory.match(entityKey))
